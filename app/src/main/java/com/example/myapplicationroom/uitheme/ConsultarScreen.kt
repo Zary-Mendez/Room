@@ -52,7 +52,6 @@ fun ConsultarScreen(onVolver: () -> Unit) {
     var nombresArticulos by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
     var total by remember { mutableStateOf(0) }
 
-    // cargar grupos disponibles
     ventaViewModel.getAllVentas { lista ->
         grupos = lista.map { it.grupo }.distinct().sorted()
     }
@@ -73,7 +72,6 @@ fun ConsultarScreen(onVolver: () -> Unit) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Dropdown de grupos
         ExposedDropdownMenuBox(
             expanded = expandedGrupo,
             onExpandedChange = { expandedGrupo = !expandedGrupo },
@@ -107,7 +105,6 @@ fun ConsultarScreen(onVolver: () -> Unit) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Boton buscar
         Button(
             onClick = {
                 val grupoId = grupoSeleccionado
@@ -116,7 +113,6 @@ fun ConsultarScreen(onVolver: () -> Unit) {
                         ventas = lista
                         total = lista.sumOf { it.valor }
 
-                        // cargar nombre de cada articulo
                         lista.forEach { venta ->
                             articuloViewModel.getArticuloById(venta.id_articulo) { articulo ->
                                 if (articulo != null) {

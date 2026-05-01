@@ -33,6 +33,8 @@ import com.example.myapplicationroom.database.entities.Articulo
 import com.example.myapplicationroom.database.viewModels.ArticuloViewModel
 import com.example.myapplicationroom.database.viewModels.VentaViewModel
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.material3.MenuAnchorType
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistrarVentaScreen(onVolver: () -> Unit) {
@@ -70,7 +72,6 @@ fun RegistrarVentaScreen(onVolver: () -> Unit) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Dropdown de artículos
         ExposedDropdownMenuBox(
             expanded = expandedArticulo,
             onExpandedChange = { expandedArticulo = !expandedArticulo },
@@ -84,7 +85,7 @@ fun RegistrarVentaScreen(onVolver: () -> Unit) {
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedArticulo) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .menuAnchor()
+                    .menuAnchor(MenuAnchorType.PrimaryNotEditable, true)
             )
             ExposedDropdownMenu(
                 expanded = expandedArticulo,

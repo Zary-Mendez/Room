@@ -25,7 +25,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.myapplicationroom.database.entities.Articulo
 import com.example.myapplicationroom.database.viewModels.ArticuloViewModel
-import androidx.compose.ui.tooling.preview.Preview
+
 @Composable
 fun RegistrarArticuloScreen(onVolver: () -> Unit) {
     val context: Context = LocalContext.current
@@ -94,7 +94,10 @@ fun RegistrarArticuloScreen(onVolver: () -> Unit) {
         if (mensaje.isNotEmpty()) {
             Text(
                 text = mensaje,
-                color = MaterialTheme.colorScheme.primary
+                color = if (mensaje.contains("existe") || mensaje.contains("completa"))
+                    MaterialTheme.colorScheme.error
+                else
+                    MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(8.dp))
         }
@@ -107,19 +110,25 @@ fun RegistrarArticuloScreen(onVolver: () -> Unit) {
                 if (idInt == null || nombre.isBlank() || descripcion.isBlank() || precioInt == null) {
                     mensaje = "Por favor completa todos los campos correctamente"
                 } else {
-                    val articulo = Articulo(
-                        id = idInt,
-                        nombre = nombre,
-                        descripcion = descripcion,
-                        precio_unitario = precioInt
-                    )
-                    articuloViewModel.saveNewArticulo(articulo) { success ->
-                        if (success) {
-                            mensaje = "Artículo guardado correctamente"
-                            cod = ""
-                            nombre = ""
-                            descripcion = ""
-                            precio = ""
+                    articuloViewModel.getArticuloById(idInt) { existe ->
+                        if (existe != null) {
+                            mensaje = "Ya existe un artículo con ese código"
+                        } else {
+                            val articulo = Articulo(
+                                id = idInt,
+                                nombre = nombre,
+                                descripcion = descripcion,
+                                precio_unitario = precioInt
+                            )
+                            articuloViewModel.saveNewArticulo(articulo) { success ->
+                                if (success) {
+                                    mensaje = "Artículo guardado correctamente"
+                                    cod = ""
+                                    nombre = ""
+                                    descripcion = ""
+                                    precio = ""
+                                }
+                            }
                         }
                     }
                 }
@@ -138,9 +147,4 @@ fun RegistrarArticuloScreen(onVolver: () -> Unit) {
             Text("Volver")
         }
     }
-}
-@Preview(showBackground = true, widthDp = 360, heightDp = 640)
-@Composable
-fun RegistrarArticuloScreenPreview() {
-    RegistrarArticuloScreen(onVolver = {})
 }
